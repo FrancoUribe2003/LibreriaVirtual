@@ -1,6 +1,6 @@
 "use server";
 
-let reviewsStore: { [bookId: string]: { rating: number; text: string }[] } = {};
+const reviewsStore: { [bookId: string]: { rating: number; text: string }[] } = {};
 
 export async function addReview(formData: FormData) {
   const bookId = formData.get("bookId") as string;

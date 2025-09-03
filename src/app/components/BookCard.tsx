@@ -1,8 +1,19 @@
 import React from "react";
+import Image from "next/image";
 import ReviewForm from "./ReviewForm";
 
+interface Book {
+  id: string;
+  title: string;
+  authors?: string[];
+  description?: string;
+  imageLinks?: {
+  thumbnail?: string;
+  };
+}
+
 interface BookCardProps {
-  book: any;
+  book: Book;
   reviews: { rating: number; text: string }[];
   onAddReview: (rating: number, text: string) => void;
 }
@@ -10,20 +21,21 @@ interface BookCardProps {
 export default function BookCard({ book, reviews, onAddReview }: BookCardProps) {
   return (
     <div className="border rounded-lg p-4 flex gap-4 flex-col">
-      {book.volumeInfo.imageLinks?.thumbnail && (
-        <img
-          src={book.volumeInfo.imageLinks.thumbnail}
-          alt={book.volumeInfo.title}
-          className="w-24 h-auto"
+      {book.imageLinks?.thumbnail && (
+        <Image
+          src={book.imageLinks.thumbnail}
+          alt={book.title}
+          width={200}
+          height={300}
         />
       )}
       <div>
-        <h2 className="font-semibold">{book.volumeInfo.title}</h2>
+        <h2 className="font-semibold">{book.title}</h2>
         <p className="text-sm text-gray-600">
-          {book.volumeInfo.authors?.join(", ")}
+          {book.authors?.join(", ")}
         </p>
         <p className="text-xs mt-2">
-          {book.volumeInfo.description?.slice(0, 120)}...
+          {book.description?.slice(0, 120)}...
         </p>
       </div>
       <ReviewForm
