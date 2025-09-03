@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 interface Props {
   bookId: string;
-  onSubmit: (rating: number, text: string) => void;
+  onSubmit: (bookId: string, rating: number, text: string) => void;
 }
 
 export default function ReviewForm({ bookId, onSubmit }: Props) {
@@ -13,7 +13,7 @@ export default function ReviewForm({ bookId, onSubmit }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!text.trim()) return;
-    onSubmit(rating, text);
+    onSubmit(bookId, rating, text); 
     setRating(5);
     setText("");
   };

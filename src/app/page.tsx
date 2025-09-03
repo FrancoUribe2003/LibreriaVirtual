@@ -1,9 +1,6 @@
 "use client";
-import Image from "next/image";
 import React, { useState } from "react";
 import { searchBooks } from "./api/searchBooks";
-import ReviewForm from "./components/ReviewForm";
-import { addReview, getReviews } from "./actions/review";
 import BookCard from "./components/BookCard";
 import type { Book } from "./components/BookCard";
 
@@ -78,7 +75,7 @@ export default function Home() {
             key={book.id}
             book={book}
             reviews={reviews[book.id] || []}
-            onAddReview={(rating, text) => handleAddReview(book.id, rating, text)}
+            onAddReview={handleAddReview}
           />
         ))}
       </div>

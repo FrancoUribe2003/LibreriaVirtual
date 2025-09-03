@@ -15,7 +15,7 @@ export interface Book {
 interface BookCardProps {
   book: Book;
   reviews: { rating: number; text: string }[];
-  onAddReview: (rating: number, text: string) => void;
+  onAddReview: (bookId: string, rating: number, text: string) => void;
 }
 
 export default function BookCard({ book, reviews, onAddReview }: BookCardProps) {
