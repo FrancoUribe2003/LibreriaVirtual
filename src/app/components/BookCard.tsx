@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import ReviewForm from "./ReviewForm";
 
-interface Book {
+export interface Book {
   id: string;
   title: string;
   authors?: string[];

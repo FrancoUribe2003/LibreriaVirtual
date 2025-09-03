@@ -5,11 +5,12 @@ import { searchBooks } from "./api/searchBooks";
 import ReviewForm from "./components/ReviewForm";
 import { addReview, getReviews } from "./actions/review";
 import BookCard from "./components/BookCard";
+import type { Book } from "./components/BookCard";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [searchType, setSearchType] = useState("title");
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const [reviews, setReviews] = useState<{
     [bookId: string]: { rating: number; text: string }[];
@@ -19,7 +20,14 @@ export default function Home() {
     e.preventDefault();
     setLoading(true);
     const results = await searchBooks(query, searchType);
-    setBooks(results);
+    const mappedBooks: Book[] = results.map((item: any) => ({
+      id: item.id,
+      title: item.volumeInfo.title,
+      authors: item.volumeInfo.authors,
+      description: item.volumeInfo.description,
+      imageLinks: item.volumeInfo.imageLinks,
+    }));
+    setBooks(mappedBooks);
     setLoading(false);
   };
 
@@ -65,7 +73,7 @@ export default function Home() {
       </form>
       {loading && <p className="mt-6">Buscando...</p>}
       <div className="w-full max-w-2xl mt-8 grid gap-6">
-        {books.map((book: any) => (
+        {books.map((book) => (
           <BookCard
             key={book.id}
             book={book}
