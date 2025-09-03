@@ -19,7 +19,7 @@ export default function ReviewForm({ bookId, onSubmit }: Props) {
   };
 
   return (
-    <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmit}>
+    <form className="mt-4 flex flex-col gap-2 text-black" onSubmit={handleSubmit}>
       <label>
         Calificación:
         <select
