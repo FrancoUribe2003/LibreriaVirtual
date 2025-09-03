@@ -4,6 +4,16 @@ import { searchBooks } from "./api/searchBooks";
 import BookCard from "./components/BookCard";
 import type { Book } from "./components/BookCard";
 
+interface GoogleBookItem {
+  id: string;
+  volumeInfo: {
+    title: string;
+    authors?: string[];
+    description?: string;
+    imageLinks?: { thumbnail?: string };
+  };
+}
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [searchType, setSearchType] = useState("title");
@@ -17,7 +27,7 @@ export default function Home() {
     e.preventDefault();
     setLoading(true);
     const results = await searchBooks(query, searchType);
-    const mappedBooks: Book[] = results.map((item: any) => ({
+    const mappedBooks: Book[] = results.map((item: GoogleBookItem) => ({
       id: item.id,
       title: item.volumeInfo.title,
       authors: item.volumeInfo.authors,
