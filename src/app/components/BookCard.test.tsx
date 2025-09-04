@@ -5,12 +5,10 @@ import { describe, it, expect, vi } from "vitest";
 
 const mockBook = {
   id: "abc123",
-  volumeInfo: {
-    title: "El Principito",
-    authors: ["Antoine de Saint-Exupéry"],
-    description: "Un clásico de la literatura.",
-    imageLinks: { thumbnail: "http://example.com/img.jpg" },
-  },
+  title: "El Principito",
+  authors: ["Antoine de Saint-Exupéry"],
+  description: "Un clásico de la literatura.",
+  imageLinks: { thumbnail: "http://example.com/img.jpg" },
 };
 
 const mockReviews = [
@@ -33,8 +31,8 @@ describe("BookCard", () => {
     expect(screen.getByText(/Un clásico de la literatura/)).toBeInTheDocument();
     expect(screen.getByText("Excelente libro")).toBeInTheDocument();
     expect(screen.getByText("Muy bueno")).toBeInTheDocument();
-    expect(screen.getAllByText("⭐⭐⭐⭐⭐")[0]).toBeInTheDocument();
-    expect(screen.getAllByText("⭐⭐⭐⭐")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("⭐".repeat(5))[0]).toBeInTheDocument();
+    expect(screen.getAllByText("⭐".repeat(4))[0]).toBeInTheDocument();
   });
 
   it("permite agregar una reseña usando el formulario", () => {
@@ -53,6 +51,7 @@ describe("BookCard", () => {
     });
     fireEvent.click(screen.getByText("Enviar reseña"));
 
-    expect(mockOnAddReview).toHaveBeenCalledWith(3, "Interesante");
+    expect(mockOnAddReview).toHaveBeenCalledWith("abc123", 3, "Interesante");
   });
+  //Comentario
 });
