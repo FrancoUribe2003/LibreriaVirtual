@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { searchBooks } from "./api/searchBooks";
 import BookCard from "./components/BookCard";
 import type { Book } from "./components/BookCard";
+import LogoutButton from "./components/logoutButton";
 
 interface GoogleBookItem {
   id: string;
@@ -89,6 +90,7 @@ export default function Home() {
           />
         ))}
       </div>
+      <LogoutButton />
     </div>
   );
 }

@@ -9,5 +9,4 @@ export async function searchBooks(query: string, type: string = "title") {
   );
   const data = await res.json();
   return data.items || [];
-  // comentario para probar el PR
 }
