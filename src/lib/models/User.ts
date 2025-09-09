@@ -3,8 +3,8 @@ import mongoose, { Schema, Document, model } from "mongoose";
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string; // encriptada después con bcrypt
-  favorites: string[]; // ids de libros favoritos
+  password: string; 
+  favorites: string[]; 
   createdAt: Date;
 }
 

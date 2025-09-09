@@ -4,6 +4,7 @@ import { searchBooks } from "./api/searchBooks";
 import BookCard from "./components/BookCard";
 import type { Book } from "./components/BookCard";
 import LogoutButton from "./components/logoutButton";
+import PerfilButton from "./components/perfilButton";
 
 interface GoogleBookItem {
   id: string;
@@ -20,9 +21,16 @@ export default function Home() {
   const [searchType, setSearchType] = useState("title");
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
-  const [reviews, setReviews] = useState<{
-    [bookId: string]: { rating: number; text: string }[];
-  }>({});
+  const [reviews, setReviews] = useState<{ [bookId: string]: any[] }>({});
+  const [userId, setUserId] = useState<string | null>(null); // Estado para el ID del usuario autenticado
+
+  const fetchReviews = async (bookId: string) => {
+    const res = await fetch(`/api/reviews?bookId=${bookId}`);
+    const data = await res.json();
+    if (data.ok) {
+      setReviews((prev) => ({ ...prev, [bookId]: data.reviews }));
+    }
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,13 +45,21 @@ export default function Home() {
     }));
     setBooks(mappedBooks);
     setLoading(false);
+
+    // Buscar reseñas para cada libro
+    mappedBooks.forEach((book) => fetchReviews(book.id));
   };
 
-  const handleAddReview = (bookId: string, rating: number, text: string) => {
-    setReviews((prev) => ({
-      ...prev,
-      [bookId]: [...(prev[bookId] || []), { rating, text }],
-    }));
+  const handleAddReview = async (bookId: string, rating: number, text: string) => {
+    const res = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bookId, rating, text }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      fetchReviews(bookId);
+    }
   };
 
   return (
@@ -87,10 +103,12 @@ export default function Home() {
             book={book}
             reviews={reviews[book.id] || []}
             onAddReview={handleAddReview}
+            currentUserId={userId ?? ""}
           />
         ))}
       </div>
       <LogoutButton />
+      <PerfilButton />
     </div>
   );
 }
