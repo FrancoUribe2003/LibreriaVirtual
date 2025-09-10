@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { searchBooks } from "./api/searchBooks";
 import BookCard from "./components/BookCard";
 import type { Book } from "./components/BookCard";
 import LogoutButton from "./components/logoutButton";
 import PerfilButton from "./components/perfilButton";
+import { useRouter } from "next/navigation";
 
 interface GoogleBookItem {
   id: string;
@@ -17,12 +18,21 @@ interface GoogleBookItem {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [searchType, setSearchType] = useState("title");
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const [reviews, setReviews] = useState<{ [bookId: string]: any[] }>({});
-  const [userId, setUserId] = useState<string | null>(null); // Estado para el ID del usuario autenticado
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/perfil")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ok && data.userId) setUserId(data.userId);
+      });
+  }, []);
 
   const fetchReviews = async (bookId: string) => {
     const res = await fetch(`/api/reviews?bookId=${bookId}`);
@@ -103,7 +113,8 @@ export default function Home() {
             book={book}
             reviews={reviews[book.id] || []}
             onAddReview={handleAddReview}
-            currentUserId={userId ?? ""}
+            currentUserId={userId}
+            refreshReviews={() => fetchReviews(book.id)}
           />
         ))}
       </div>

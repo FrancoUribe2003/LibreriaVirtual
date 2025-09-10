@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, model } from "mongoose";
 export interface IVote extends Document {
   reviewId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
-  vote: number; // 1 = positivo, -1 = negativo
+  vote: number; // 1 positivo, -1 negativo
 }
 
 const voteSchema = new Schema<IVote>({
