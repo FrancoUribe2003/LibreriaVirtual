@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ReviewFrontend } from "@/lib/models/ReviewFrontend";
+import { FavoriteFrontend } from "@/lib/models/FavoriteFrontend";
 
 export default function PerfilPage() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [userId, setUserId] = useState<string>("");
-  const [userReviews, setUserReviews] = useState<any[]>([]);
-  const [favorites, setFavorites] = useState<{ id: string; title: string }[]>([]);
+  const [userReviews, setUserReviews] = useState<ReviewFrontend[]>([]);
+  const [favorites, setFavorites] = useState<FavoriteFrontend[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,8 +26,8 @@ export default function PerfilPage() {
         const res = await fetch(`/api/reviews?userId=${userId}`);
         const data = await res.json();
         if (data.ok) {
-          const reviewsWithTitles = await Promise.all(
-            data.reviews.map(async (review: any) => {
+          const reviewsWithTitles: ReviewFrontend[] = await Promise.all(
+            data.reviews.map(async (review: ReviewFrontend) => {
               try {
                 const bookRes = await fetch(`https://www.googleapis.com/books/v1/volumes/${review.bookId}`);
                 const bookData = await bookRes.json();

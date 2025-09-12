@@ -6,6 +6,7 @@ import type { Book } from "./components/BookCard";
 import LogoutButton from "./components/logoutButton";
 import PerfilButton from "./components/perfilButton";
 import { useRouter } from "next/navigation";
+import { ReviewFrontend } from "@/lib/models/ReviewFrontend";
 
 interface GoogleBookItem {
   id: string;
@@ -18,12 +19,11 @@ interface GoogleBookItem {
 }
 
 export default function Home() {
-  const router = useRouter();
   const [query, setQuery] = useState("");
   const [searchType, setSearchType] = useState("title");
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
-  const [reviews, setReviews] = useState<{ [bookId: string]: any[] }>({});
+  const [reviews, setReviews] = useState<{ [bookId: string]: ReviewFrontend[] }>({});
   const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {

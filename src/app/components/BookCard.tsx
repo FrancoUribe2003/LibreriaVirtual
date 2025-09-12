@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import ReviewForm from "./ReviewForm";
+import { ReviewFrontend } from "@/lib/models/ReviewFrontend";
 
 export interface Book {
   id: string;
@@ -12,17 +13,9 @@ export interface Book {
   };
 }
 
-interface Review {
-  _id: string;
-  rating: number;
-  content: string;
-  userName: string;
-  userId: string;
-}
-
 interface BookCardProps {
   book: Book;
-  reviews: Review[];
+  reviews: ReviewFrontend[]; 
   onAddReview: (bookId: string, rating: number, text: string) => void;
   currentUserId: string;
   refreshReviews: () => void;
@@ -34,7 +27,7 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
   const [editRating, setEditRating] = useState(5);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const handleEdit = (review: Review) => {
+  const handleEdit = (review: ReviewFrontend) => {
     setEditingReviewId(review._id);
     setEditText(review.content);
     setEditRating(review.rating);
@@ -47,7 +40,7 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
       body: JSON.stringify({ reviewId, rating: editRating, text: editText }),
     });
     setEditingReviewId(null);
-    refreshReviews(); // <-- refresca las reseñas
+    refreshReviews(); 
   };
 
   const handleDelete = async (reviewId: string) => {
@@ -56,7 +49,7 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ reviewId }),
     });
-    refreshReviews(); // <-- refresca las reseñas
+    refreshReviews(); 
   };
 
   const handleAddFavorite = async (bookId: string) => {
@@ -82,10 +75,10 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
         <h2 className="font-semibold flex items-center gap-4">
           {book.title}
           <button
-            className="px-3 py-1 bg-yellow-500 text-black rounded hover:bg-yellow-600 transition"
+            className={`px-3 py-1 rounded transition ${isFavorite ? "bg-green-500 text-white" : "bg-yellow-500 text-black hover:bg-yellow-600"}`}
             onClick={() => handleAddFavorite(book.id)}
           >
-            Añadir a favoritos
+            {isFavorite ? "Favorito" : "Añadir a favoritos"}
           </button>
         </h2>
         <p className="text-sm text-gray-600">
@@ -101,14 +94,6 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
       />
       <div className="mt-2">
         {(reviews || []).map((review, idx) => {
-          // DEBUG: Mostrar los valores que se comparan
-          console.log("REVIEW USERID:", review.userId, "CURRENT USERID:", currentUserId);
-
-          // DEBUG: Mostrar si la condición se cumple
-          if (review.userId === currentUserId) {
-            console.log("BOTONES MOSTRADOS PARA:", review.userId);
-          }
-
           return (
             <div key={idx} className="border rounded p-2 mb-2 bg-black text-white relative">
               <span>{"⭐".repeat(review.rating)}</span>
