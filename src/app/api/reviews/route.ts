@@ -62,7 +62,6 @@ export async function GET(req: Request) {
   const client = await clientPromise;
   const db = client.db();
 
-  // Si viene userId, busca las reseñas del usuario
   if (userId) {
     const reviews = await db.collection("reviews")
       .find({ userId })
@@ -71,7 +70,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: true, reviews });
   }
 
-  // Si viene bookId, busca las reseñas del libro
   if (bookId) {
     const reviews = await db.collection("reviews")
       .find({ bookId })
@@ -104,7 +102,6 @@ export async function PATCH(req: Request) {
   const client = await clientPromise;
   const db = client.db();
 
-  // Solo permite editar si es el autor
   const review = await db.collection("reviews").findOne({ _id: new ObjectId(reviewId) });
   if (!review || review.userId !== payload.userId) {
     return NextResponse.json({ ok: false, error: "No autorizado" }, { status: 403 });
@@ -138,7 +135,6 @@ export async function DELETE(req: Request) {
   const client = await clientPromise;
   const db = client.db();
 
-  // Solo permite eliminar si es el autor
   const review = await db.collection("reviews").findOne({ _id: new ObjectId(reviewId) });
   if (!review || review.userId !== payload.userId) {
     return NextResponse.json({ ok: false, error: "No autorizado" }, { status: 403 });

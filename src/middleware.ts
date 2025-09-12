@@ -6,12 +6,10 @@ const PUBLIC_PATHS = ["/login", "/register", "/api/login", "/api/register"];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Permitir rutas públicas
   if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
     return NextResponse.next();
   }
 
-  // Verifica si existe la cookie de sesión
   const session = request.cookies.get("session");
   if (!session) {
     // Si no hay sesión, redirige a /login

@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document, model } from "mongoose";
 
 export interface IReview extends Document {
-  bookId: string; // id del libro (de Google Books)
-  userId: mongoose.Types.ObjectId; // referencia al usuario
+  bookId: string; 
+  userId: mongoose.Types.ObjectId; 
   content: string;
-  rating: number; // 1 a 5
-  votes: number; // suma de votos positivos-negativos
+  rating: number; 
+  votes: number; 
   createdAt: Date;
 }
 

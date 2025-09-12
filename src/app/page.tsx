@@ -56,7 +56,6 @@ export default function Home() {
     setBooks(mappedBooks);
     setLoading(false);
 
-    // Buscar reseñas para cada libro
     mappedBooks.forEach((book) => fetchReviews(book.id));
   };
 

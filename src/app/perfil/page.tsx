@@ -78,7 +78,6 @@ export default function PerfilPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bookId }),
     });
-    // Actualiza la lista local de favoritos
     setFavorites(favorites.filter(fav => fav.id !== bookId));
   };
 

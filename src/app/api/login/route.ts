@@ -14,18 +14,15 @@ const loginSchema = z.object({
 export async function POST(req: Request) {
   const body = await req.json();
 
-  // Validar los datos con Zod
   const result = loginSchema.safeParse(body);
 
   if (!result.success) {
-    // Si los datos no son válidos, devuelve error
     return NextResponse.json(
       { ok: false, error: "Datos inválidos", details: result.error.issues },
       { status: 400 }
     );
   }
 
-  // Si son válidos, extrae los datos
   const { email, password } = result.data;
 
   const client = await clientPromise;
