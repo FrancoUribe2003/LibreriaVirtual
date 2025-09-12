@@ -1,8 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { searchBooks } from "./api/searchBooks";
 import BookCard from "./components/BookCard";
 import type { Book } from "./components/BookCard";
+import LogoutButton from "./components/logoutButton";
+import PerfilButton from "./components/perfilButton";
+import { useRouter } from "next/navigation";
+import { ReviewFrontend } from "@/lib/models/ReviewFrontend";
 
 interface GoogleBookItem {
   id: string;
@@ -19,9 +23,24 @@ export default function Home() {
   const [searchType, setSearchType] = useState("title");
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
-  const [reviews, setReviews] = useState<{
-    [bookId: string]: { rating: number; text: string }[];
-  }>({});
+  const [reviews, setReviews] = useState<{ [bookId: string]: ReviewFrontend[] }>({});
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/perfil")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ok && data.userId) setUserId(data.userId);
+      });
+  }, []);
+
+  const fetchReviews = async (bookId: string) => {
+    const res = await fetch(`/api/reviews?bookId=${bookId}`);
+    const data = await res.json();
+    if (data.ok) {
+      setReviews((prev) => ({ ...prev, [bookId]: data.reviews }));
+    }
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,13 +55,20 @@ export default function Home() {
     }));
     setBooks(mappedBooks);
     setLoading(false);
+
+    mappedBooks.forEach((book) => fetchReviews(book.id));
   };
 
-  const handleAddReview = (bookId: string, rating: number, text: string) => {
-    setReviews((prev) => ({
-      ...prev,
-      [bookId]: [...(prev[bookId] || []), { rating, text }],
-    }));
+  const handleAddReview = async (bookId: string, rating: number, text: string) => {
+    const res = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bookId, rating, text }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      fetchReviews(bookId);
+    }
   };
 
   return (
@@ -86,9 +112,13 @@ export default function Home() {
             book={book}
             reviews={reviews[book.id] || []}
             onAddReview={handleAddReview}
+            currentUserId={userId}
+            refreshReviews={() => fetchReviews(book.id)}
           />
         ))}
       </div>
+      <LogoutButton />
+      <PerfilButton />
     </div>
   );
 }

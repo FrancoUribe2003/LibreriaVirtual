@@ -19,11 +19,11 @@ export default function ReviewForm({ bookId, onSubmit }: Props) {
   };
 
   return (
-    <form className="mt-4 flex flex-col gap-2 text-black" onSubmit={handleSubmit}>
+    <form className="mt-4 flex flex-col gap-2 text-white" onSubmit={handleSubmit}>
       <label>
         Calificación:
         <select
-          className="ml-2 border rounded px-2 py-1"
+          className="ml-2 border rounded px-2 py-1 bg-black text-yellow-400 focus:outline-none"
           value={rating}
           onChange={e => setRating(Number(e.target.value))}
         >
@@ -35,7 +35,7 @@ export default function ReviewForm({ bookId, onSubmit }: Props) {
         </select>
       </label>
       <textarea
-        className="border rounded px-2 py-1"
+        className="border rounded px-2 py-1 bg-black text-white focus:outline-none"
         placeholder="Escribe tu reseña..."
         rows={2}
         value={text}
