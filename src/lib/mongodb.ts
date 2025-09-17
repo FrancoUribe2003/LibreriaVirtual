@@ -12,6 +12,7 @@ let clientPromise: Promise<MongoClient>;
 
 if (!process.env.MONGODB_URI) {
   throw new Error("Por favor define la variable de entorno MONGODB_URI");
+  //dejo un comentario para poder hacer el merge
 }
 
 if (process.env.NODE_ENV === "development") {
