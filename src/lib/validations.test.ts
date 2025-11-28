@@ -165,7 +165,7 @@ describe("Validation Schemas", () => {
     it("debe validar un voto válido 'up'", () => {
       const validData = {
         reviewId: "review123",
-        vote: "up",
+        value: 1, // Cambiado de 'up' a 1
       };
 
       const result = voteSchema.safeParse(validData);
@@ -175,7 +175,7 @@ describe("Validation Schemas", () => {
     it("debe validar un voto válido 'down'", () => {
       const validData = {
         reviewId: "review123",
-        vote: "down",
+        value: -1, // Cambiado de 'down' a -1
       };
 
       const result = voteSchema.safeParse(validData);
@@ -185,7 +185,7 @@ describe("Validation Schemas", () => {
     it("debe rechazar un voto inválido", () => {
       const invalidData = {
         reviewId: "review123",
-        vote: "invalid",
+        value: 5, // Valor inválido (no es 1 ni -1)
       };
 
       const result = voteSchema.safeParse(invalidData);

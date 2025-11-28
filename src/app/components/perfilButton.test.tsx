@@ -11,13 +11,12 @@ vi.mock("next/navigation", () => ({
 describe("PerfilButton", () => {
   it("renderiza el botón con el icono de perfil", () => {
     render(<PerfilButton />);
-    expect(screen.getByTitle("Ver perfil")).toBeInTheDocument();
-    expect(screen.getByLabelText("perfil")).toBeInTheDocument();
+    expect(screen.getByText("Perfil")).toBeInTheDocument();
   });
 
   it("redirige al perfil al hacer clic", () => {
     render(<PerfilButton />);
-    const button = screen.getByTitle("Ver perfil");
+    const button = screen.getByText("Perfil");
     fireEvent.click(button);
   });
 });
