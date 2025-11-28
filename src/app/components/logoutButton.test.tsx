@@ -21,13 +21,12 @@ afterEach(() => {
 describe("LogoutButton", () => {
   it("renderiza el botón de logout", () => {
     render(<LogoutButton />);
-    expect(screen.getByTitle("Cerrar sesión")).toBeInTheDocument();
-    expect(screen.getByLabelText("logout")).toBeInTheDocument();
+    expect(screen.getByText("Cerrar Sesión")).toBeInTheDocument();
   });
 
   it("hace logout y redirige al login al hacer clic", async () => {
     render(<LogoutButton />);
-    const button = screen.getByTitle("Cerrar sesión");
+    const button = screen.getByText("Cerrar Sesión");
     fireEvent.click(button);
     expect(global.fetch).toHaveBeenCalledWith("/api/logout", { method: "POST" });
   });

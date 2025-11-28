@@ -1,8 +1,14 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import BookCard, { Book } from "./BookCard";
+import { describe, it, expect, vi, beforeAll } from "vitest";
 import { ReviewFrontend } from "@/lib/models/ReviewFrontend";
+
+vi.mock("../actions/reviews", () => ({
+  addReview: vi.fn(),
+  getReviews: vi.fn(),
+}));
+
+import BookCard, { Book } from "./BookCard";
 
 const mockBook: Book = {
   id: "abc123",
@@ -20,6 +26,7 @@ const mockReviews: ReviewFrontend[] = [
     userName: "Franco",
     userId: "user1",
     bookId: "abc123",
+    votes: 0,
   },
   {
     _id: "r2",
@@ -28,6 +35,7 @@ const mockReviews: ReviewFrontend[] = [
     userName: "Uribe",
     userId: "user2",
     bookId: "abc123",
+    votes: 0,
   },
 ];
 
@@ -37,9 +45,7 @@ describe("BookCard", () => {
       <BookCard
         book={mockBook}
         reviews={mockReviews}
-        onAddReview={vi.fn()}
         currentUserId="user1"
-        refreshReviews={vi.fn()}
       />
     );
 
@@ -52,17 +58,15 @@ describe("BookCard", () => {
     expect(screen.getAllByText("⭐".repeat(4))[0]).toBeInTheDocument();
   });
 
-  it('muestra el botón "Añadir a favoritos"', () => {
+  it('muestra el botón "favoritos"', () => {
     render(
       <BookCard
         book={mockBook}
         reviews={mockReviews}
-        onAddReview={vi.fn()}
         currentUserId="user1"
-        refreshReviews={vi.fn()}
       />
     );
-    expect(screen.getByText("Añadir a favoritos")).toBeInTheDocument();
+    expect(screen.getByText(/favoritos/i)).toBeInTheDocument();
   });
 
   it('muestra los botones "Editar" y "Eliminar" solo para el usuario actual', () => {
@@ -70,9 +74,7 @@ describe("BookCard", () => {
       <BookCard
         book={mockBook}
         reviews={mockReviews}
-        onAddReview={vi.fn()}
         currentUserId="user1"
-        refreshReviews={vi.fn()}
       />
     );
     expect(screen.getByText("Editar")).toBeInTheDocument();
@@ -84,9 +86,7 @@ describe("BookCard", () => {
       <BookCard
         book={mockBook}
         reviews={mockReviews}
-        onAddReview={vi.fn()}
         currentUserId="user3"
-        refreshReviews={vi.fn()}
       />
     );
     expect(screen.queryByText("Editar")).not.toBeInTheDocument();

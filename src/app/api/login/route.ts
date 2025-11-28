@@ -38,14 +38,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Contraseña incorrecta" }, { status: 401 });
   }
 
-  // Genera el JWT
   const token = jwt.sign(
     { userId: user._id, email: user.email },
     JWT_SECRET,
     { expiresIn: "7d" }
   );
 
-  // Guarda el JWT en la cookie
   const response = NextResponse.json({ ok: true, userId: user._id });
   response.headers.set(
     "Set-Cookie",

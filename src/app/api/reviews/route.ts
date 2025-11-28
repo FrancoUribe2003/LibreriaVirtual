@@ -46,12 +46,13 @@ export async function POST(req: Request) {
     userName: user.name,
     content: text,
     rating,
+    votes: 0,
     createdAt: new Date(),
   };
 
   await db.collection("reviews").insertOne(review);
 
-  return NextResponse.json({ ok: true, review });
+  return NextResponse.json({ ok: true, review }, { status: 201 });
 }
 
 export async function GET(req: Request) {
@@ -63,11 +64,31 @@ export async function GET(req: Request) {
   const db = client.db();
 
   if (userId) {
-    const reviews = await db.collection("reviews")
-      .find({ userId })
+    
+    const reviewsAsString = await db.collection("reviews")
+      .find({ userId: userId })
       .sort({ createdAt: -1 })
       .toArray();
-    return NextResponse.json({ ok: true, reviews });
+    
+    const reviewsAsObjectId = await db.collection("reviews")
+      .find({ userId: new ObjectId(userId) })
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    const allReviews = [...reviewsAsString, ...reviewsAsObjectId];
+    
+    const serializedReviews = allReviews.map(r => ({
+      _id: r._id.toString(),
+      bookId: r.bookId,
+      userId: typeof r.userId === 'object' ? r.userId.toString() : r.userId,
+      userName: r.userName || "Usuario",
+      content: r.content,
+      rating: r.rating,
+      votes: r.votes || 0,
+      createdAt: r.createdAt,
+    }));
+    
+    return NextResponse.json({ ok: true, reviews: serializedReviews });
   }
 
   if (bookId) {
@@ -75,8 +96,19 @@ export async function GET(req: Request) {
       .find({ bookId })
       .sort({ createdAt: -1 })
       .toArray();
-    const reviewsWithStringId = reviews.map(r => ({ ...r, userId: r.userId.toString() }));
-    return NextResponse.json({ ok: true, reviews: reviewsWithStringId });
+    
+    const serializedReviews = reviews.map(r => ({
+      _id: r._id.toString(),
+      bookId: r.bookId,
+      userId: typeof r.userId === 'object' ? r.userId.toString() : r.userId,
+      userName: r.userName || "Usuario",
+      content: r.content,
+      rating: r.rating,
+      votes: r.votes || 0,
+      createdAt: r.createdAt,
+    }));
+    
+    return NextResponse.json({ ok: true, reviews: serializedReviews });
   }
 
   return NextResponse.json({ ok: false, error: "Falta parámetro" }, { status: 400 });

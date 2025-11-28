@@ -5,7 +5,6 @@ import { ObjectId } from "mongodb";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
-console.log("MONGODB_URI en runtime:", process.env.MONGODB_URI);
 
 export async function POST(req: Request) {
   const cookie = req.headers.get("cookie");
