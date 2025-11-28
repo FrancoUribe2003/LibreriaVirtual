@@ -124,7 +124,7 @@ describe("Reviews API", () => {
       const response = await POST(request);
       const data = await response.json();
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(201);
       expect(data.ok).toBe(true);
       expect(data.review).toBeDefined();
       expect(mockInsertOne).toHaveBeenCalled();
@@ -157,7 +157,7 @@ describe("Reviews API", () => {
         headers: { "Content-Type": "application/json", Cookie: "session=valid-token" },
         body: JSON.stringify({
           bookId: "book123",
-          text: "C", // Contenido muy corto
+          text: "C", 
           rating: 5,
         }),
       });
@@ -178,7 +178,7 @@ describe("Reviews API", () => {
         body: JSON.stringify({
           bookId: "book123",
           text: "Esta es una reseña con suficiente contenido.",
-          rating: 6, // Rating inválido
+          rating: 6, 
         }),
       });
 
@@ -244,7 +244,7 @@ describe("Reviews API", () => {
     it("debe rechazar actualización de reseña ajena", async () => {
       const mockReview = {
         _id: new ObjectId("507f1f77bcf86cd799439011"),
-        userId: "otherUser", // Reseña de otro usuario
+        userId: "otherUser", 
         content: "Contenido original",
         rating: 3,
       };
@@ -319,7 +319,7 @@ describe("Reviews API", () => {
     it("debe rechazar eliminación de reseña ajena", async () => {
       const mockReview = {
         _id: new ObjectId("507f1f77bcf86cd799439011"),
-        userId: "otherUser", // Reseña de otro usuario
+        userId: "otherUser", 
         content: "Reseña ajena",
         rating: 4,
       };

@@ -1,8 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { GET, POST } from "./route";
-import jwt from "jsonwebtoken";
 
-// Definir mocks antes de usarlos
 vi.mock("mongoose", () => ({
   default: {
     connection: { readyState: 1 },
@@ -12,7 +9,6 @@ vi.mock("mongoose", () => ({
 
 vi.mock("jsonwebtoken");
 
-// Mock factories con funciones
 vi.mock("@/lib/models/Vote", () => {
   const mockFindOne = vi.fn();
   const mockCreate = vi.fn();
@@ -39,7 +35,8 @@ vi.mock("@/lib/models/Review", () => {
   };
 });
 
-// Importar después de los mocks
+import { GET, POST } from "./route";
+import jwt from "jsonwebtoken";
 import Vote from "@/lib/models/Vote";
 import Review from "@/lib/models/Review";
 
@@ -60,7 +57,7 @@ describe("Votes API", () => {
 
       vi.mocked(jwt.verify).mockReturnValue({ userId: "user123", email: "user@example.com" } as any);
       vi.mocked(Review.findById).mockResolvedValue(mockReview as any);
-      vi.mocked(Vote.findOne).mockResolvedValue(null); // No había votado
+      vi.mocked(Vote.findOne).mockResolvedValue(null); 
       vi.mocked(Vote.create).mockResolvedValue({ vote: 1 } as any);
 
       const request = new Request("http://localhost:3000/api/votes", {
@@ -107,7 +104,7 @@ describe("Votes API", () => {
 
       expect(response.status).toBe(200);
       expect(data.ok).toBe(true);
-      expect(mockReview.votes).toBe(-1); // 1 + (-2) = -1
+      expect(mockReview.votes).toBe(-1); 
       expect(mockExistingVote.vote).toBe(-1);
     });
 
@@ -140,7 +137,7 @@ describe("Votes API", () => {
 
       expect(response.status).toBe(200);
       expect(data.ok).toBe(true);
-      expect(mockReview.votes).toBe(0); // 1 + (-1) = 0
+      expect(mockReview.votes).toBe(0); 
       expect(Vote.findByIdAndDelete).toHaveBeenCalledWith("vote123");
     });
 
@@ -205,7 +202,7 @@ describe("Votes API", () => {
       const request = new Request("http://localhost:3000/api/votes", {
         method: "POST",
         headers: { "Content-Type": "application/json", Cookie: "session=valid" },
-        body: JSON.stringify({ reviewId: "review123", value: 5 }), // Inválido
+        body: JSON.stringify({ reviewId: "review123", value: 5 }),
       });
 
       const response = await POST(request);

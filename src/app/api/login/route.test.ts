@@ -123,7 +123,6 @@ describe("POST /api/login", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: "test@example.com",
-        // falta password
       }),
     });
 

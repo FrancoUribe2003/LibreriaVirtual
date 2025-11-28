@@ -137,7 +137,6 @@ describe("POST /api/register", () => {
       body: JSON.stringify({
         name: "Franco Uribe",
         email: "franco@example.com",
-        // falta password
       }),
     });
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 interface VoteButtonsProps {
   reviewId: string;
   initialVotes: number;
-  isOwnReview?: boolean; // No puedes votar tu propia reseña
+  isOwnReview?: boolean;
 }
 
 export default function VoteButtons({
@@ -16,7 +16,6 @@ export default function VoteButtons({
   const [userVote, setUserVote] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Obtener voto actual del usuario
   useEffect(() => {
     const fetchUserVote = async () => {
       try {
@@ -50,11 +49,10 @@ export default function VoteButtons({
         const data = await res.json();
         setVotes(data.review.votes);
 
-        // Actualizar estado del voto del usuario
         if (userVote === value) {
-          setUserVote(null); // Quitó el voto
+          setUserVote(null); 
         } else {
-          setUserVote(value); // Cambió o agregó voto
+          setUserVote(value); 
         }
       } else {
         const data = await res.json();

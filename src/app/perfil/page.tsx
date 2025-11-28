@@ -22,31 +22,66 @@ export default function PerfilPage() {
 
   useEffect(() => {
     async function fetchReviewsWithTitles() {
-      if (userId) {
+      if (!userId) {
+        console.log("⚠️ No hay userId todavía");
+        return;
+      }
+      
+      try {
         const res = await fetch(`/api/reviews?userId=${userId}`);
+        
+        if (!res.ok) {
+          console.error("❌ Error en fetch reviews:", res.status);
+          return;
+        }
+        
         const data = await res.json();
-        if (data.ok) {
+        
+        if (data.ok && Array.isArray(data.reviews)) {
+          
           const reviewsWithTitles: ReviewFrontend[] = await Promise.all(
-            data.reviews.map(async (review: ReviewFrontend) => {
+            data.reviews.map(async (review: any) => {
               try {
                 const bookRes = await fetch(`https://www.googleapis.com/books/v1/volumes/${review.bookId}`);
+                if (!bookRes.ok) {
+                  throw new Error(`HTTP ${bookRes.status}`);
+                }
                 const bookData = await bookRes.json();
                 return {
-                  ...review,
-                  bookTitle: bookData.volumeInfo?.title || "",
+                  _id: review._id,
+                  bookId: review.bookId,
+                  userId: review.userId,
+                  userName: review.userName,
+                  content: review.content,
+                  rating: review.rating,
+                  votes: review.votes || 0,
+                  bookTitle: bookData.volumeInfo?.title || "Título no disponible",
                 };
-              } catch {
+              } catch (error) {
+                console.error(`❌ Error obteniendo libro ${review.bookId}:`, error);
                 return {
-                  ...review,
-                  bookTitle: "",
+                  _id: review._id,
+                  bookId: review.bookId,
+                  userId: review.userId,
+                  userName: review.userName,
+                  content: review.content,
+                  rating: review.rating,
+                  votes: review.votes || 0,
+                  bookTitle: "Título no disponible",
                 };
               }
             })
           );
+          
           setUserReviews(reviewsWithTitles);
+        } else {
+          console.log("⚠️ No se encontraron reseñas o respuesta inválida");
         }
+      } catch (error) {
+        console.error("💥 Error en fetchReviewsWithTitles:", error);
       }
     }
+    
     fetchReviewsWithTitles();
   }, [userId]);
 
