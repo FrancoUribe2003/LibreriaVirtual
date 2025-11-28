@@ -6,12 +6,10 @@ export default function PerfilButton() {
 
   return (
     <button
-      title="Ver perfil"
       onClick={() => router.push("/perfil")}
-      className="absolute top-4 left-4 p-2 rounded-full bg-gray-200 hover:bg-gray-300"
+      className="absolute top-4 left-4 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
     >
-      {/* Puedes usar un icono SVG aquí */}
-      <span role="img" aria-label="perfil">👤</span>
+      Perfil
     </button>
   );
 }

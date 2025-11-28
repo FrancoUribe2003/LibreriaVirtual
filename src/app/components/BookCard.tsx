@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import ReviewForm from "./ReviewForm";
+import VoteButtons from "./VoteButtons";
 import { ReviewFrontend } from "@/lib/models/ReviewFrontend";
 
 export interface Book {
@@ -9,7 +10,7 @@ export interface Book {
   authors?: string[];
   description?: string;
   imageLinks?: {
-  thumbnail?: string;
+    thumbnail?: string;
   };
 }
 
@@ -94,13 +95,25 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
       />
       <div className="mt-2">
         {(reviews || []).map((review, idx) => {
+          const isOwnReview = review.userId === currentUserId;
+          
           return (
             <div key={idx} className="border rounded p-2 mb-2 bg-black text-white relative">
               <span>{"⭐".repeat(review.rating)}</span>
               <p className="text-sm">{review.content}</p>
               <p className="text-xs text-gray-400">Por: {review.userName}</p>
-              {/* DEBUG: Mostrar si la condición se cumple */}
-              {review.userId === currentUserId && (
+              
+              {/* Botones de votación */}
+              <div className="mt-2">
+                <VoteButtons
+                  reviewId={review._id}
+                  initialVotes={review.votes || 0}
+                  isOwnReview={isOwnReview}
+                />
+              </div>
+
+              {/* Botones de editar/eliminar */}
+              {isOwnReview && (
                 <div className="absolute right-2 bottom-2 flex gap-2">
                   <button
                     className="text-blue-400 underline text-xs"
@@ -116,6 +129,7 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
                   </button>
                 </div>
               )}
+
               {/* Formulario de edición */}
               {editingReviewId === review._id && (
                 <div className="mt-2 bg-gray-900 p-2 rounded">
@@ -133,7 +147,7 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
                   <textarea
                     value={editText}
                     onChange={e => setEditText(e.target.value)}
-                    className="border rounded px-2 py-1 bg-black text-white mt-2"
+                    className="border rounded px-2 py-1 bg-black text-white mt-2 w-full"
                     rows={2}
                   />
                   <button
@@ -153,22 +167,6 @@ export default function BookCard({ book, reviews, onAddReview, currentUserId, re
             </div>
           );
         })}
-      </div>
-      <div className="flex items-center gap-4 mb-2">
-        <label>
-          Calificación:
-          <select
-            className="ml-2 border rounded px-2 py-1 bg-black text-yellow-400 focus:outline-none"
-            value={editRating}
-            onChange={e => setEditRating(Number(e.target.value))}
-          >
-            <option value={1}>⭐</option>
-            <option value={2}>⭐⭐</option>
-            <option value={3}>⭐⭐⭐</option>
-            <option value={4}>⭐⭐⭐⭐</option>
-            <option value={5}>⭐⭐⭐⭐⭐</option>
-          </select>
-        </label>
       </div>
     </div>
   );

@@ -6,4 +6,5 @@ export interface ReviewFrontend {
   rating: number;
   userName?: string;
   bookTitle?: string;
+  votes: number;
 }
