@@ -12,11 +12,9 @@ export function middleware(request: NextRequest) {
 
   const session = request.cookies.get("session");
   if (!session) {
-    // Si no hay sesión, redirige a /login
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Si hay sesión, permite el acceso
   return NextResponse.next();
 }
 
